@@ -68,7 +68,10 @@ NC='\033[0m' # No Color
 ## Docker Shortcusts
 alias dc='docker-compose'
 alias d='docker'
-function dup { docker-compose -f "$1" up "$2";}
+function dup {
+        crn=$(pwd);
+        cd $1 && docker-compose up $2 && cd $crn;
+}
 function drs { docker-compose -f "$1" restart;}
 function ddown { docker-compose -f "$1" down;}
 function dstop { docker-compose -f "$1" stop;}
