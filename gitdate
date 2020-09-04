@@ -1,0 +1,26 @@
+function gitdate(){
+
+RED='\033[1;31m'
+GRN='\033[0;32m'
+ORG='\033[0;33m'
+YLW='\033[1;33m'
+LBL='\033[1;34m'
+NC='\033[0m' # No Color
+
+        echo
+        echo  -e "${ORG}Date (ex: MM/DD/YYYY HH:MM:SS) ?${NC}"
+        read ans;
+
+        if [ -n "${ans}" ]
+        then
+                GIT_COMMITTER_DATE="'${ans} +0800'" git commit --amend --no-edit --date "'${ans} +0800'";
+                echo -e "${GRN}Date Updated....${NC}"
+
+                echo -e "${RED}Do you want to force push ? [Y/n]${NC}"
+                read frcup
+                if [ -n "${frcup}" ] && ( [ "${frcup}" = "y" ] || [ "${frcup}" = "Y" ] )
+                then
+                        git push --force
+                fi
+        fi
+}
