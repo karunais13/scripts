@@ -5,6 +5,23 @@ alias staging='cd ~/folder/'
 alias uat='cd ~/folder/'
 alias live='cd ~/folder/'
 
+#container list
+ffsrvc=( auth/docker att-sch/docker common/docker sap-report/docker docker-service )
+function ffup(){
+   for i in "${ffsrvc[@]}"
+   do
+    :
+        dup ~/project/$i -d;
+   done
+}
+function ffdown(){
+   for i in "${ffsrvc[@]}"
+   do
+    :
+        ddown ~/project/$i;
+   done
+}
+
 #Artisan related Alias
 alias art='php artisan'
 
@@ -72,8 +89,20 @@ function dup {
         crn=$(pwd);
         cd $1 && docker-compose up $2 && cd $crn;
 }
-function drs { docker-compose -f "$1" restart;}
-function ddown { docker-compose -f "$1" down;}
-function dstop { docker-compose -f "$1" stop;}
+
+function ddown {
+        crn=$(pwd);
+        cd $1 && docker-compose down && cd $crn;
+}
+
+function dstop {
+        crn=$(pwd);
+        cd $1 && docker-compose stop && cd $crn;
+}
+
+function drs {
+        crn=$(pwd);
+        cd $1 && docker-compose restart && cd $crn;
+}
 function dbash { docker exec -it "$1" /bin/bash;}
 function dlog {	[ -z $2 ] && docker logs $1 || docker logs $1 $2;}
