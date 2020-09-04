@@ -1,0 +1,76 @@
+# Created By Karu
+### Enviroment Based Alias
+alias composer='COMPOSER_MEMORY_LIMIT=-1 composer'
+alias staging='cd ~/folder/'
+alias uat='cd ~/folder/'
+alias live='cd ~/folder/'
+
+#Artisan related Alias
+alias art='php artisan'
+
+function migrate(){
+  art migrate-all $*
+}
+
+### Deployment
+function deploy(){
+
+RED='\033[1;31m'
+GRN='\033[0;32m'
+ORG='\033[0;33m'
+YLW='\033[1;33m'
+LBL='\033[1;34m'
+NC='\033[0m' # No Color
+
+
+    git status;
+    echo
+    echo
+    echo  -e "${ORG}What you want to do ?${NC}"
+    echo  -e "${ORG}1) Checkout version ${LBL}(For tag)${NC}"
+    echo  -e "${ORG}2) Change Branch${NC}"
+    echo  -e "${ORG}3) Rebase ${LBL}(choose this if you want pull from current branch)${NC}"
+
+    I="0";
+    while true; do
+        read -p "Answer : " ans
+
+        I=$[$I + 1];
+
+        if (( "$I" > 2 ));
+            then  echo ;echo -e "${YLW}Incorrect answer more than 3 times. BYE!!!${NC}"; echo ;break;
+        fi
+
+        brch="$1";
+        if [ -n ${ans} ] && ( [ "${ans}" = "1" ] || [ "${ans}" = "2" ] ) && [ -z $1 ]
+            then
+                echo -e "${RED}Please key in branch name or tag version ?${NC}"
+                read brch
+        fi
+
+        if  [ -n ${ans} ] && ([ "${ans}" = "1" ] || [ "${ans}" = "2" ]) && [ -z ${brch} ]
+            then
+                echo -e "${RED}Branch/Version not found.${NC}";
+                break;
+        fi
+
+        case $ans in
+            [1]* ) echo -e "${GRN}Git Fetching....${NC}"; git fetch && git stash && git checkout ${brch} && git stash pop; break;;
+            [2]* ) echo -e "${GRN}Git Fetching....${NC}"; git fetch && git stash && git checkout ${brch} && git rebase && git stash pop; break;;
+            [3]* ) echo -e "${GRN}Git Fetching....${NC}"; git fetch && git stash && git rebase && git stash pop; break;;
+            * ) echo -e "${RED}Please answer 1, 2 or 3.${NC}";;
+        esac
+
+    done
+
+}
+
+## Docker Shortcusts
+alias dc='docker-compose'
+alias d='docker'
+function dup { docker-compose -f "$1" up "$2";}
+function drs { docker-compose -f "$1" restart;}
+function ddown { docker-compose -f "$1" down;}
+function dstop { docker-compose -f "$1" stop;}
+function dbash { docker exec -it "$1" /bin/bash;}
+function dlog {	[ -z $2 ] && docker logs $1 || docker logs $1 $2;}
